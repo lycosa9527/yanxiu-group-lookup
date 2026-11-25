@@ -1,6 +1,6 @@
 # 研修小组入群
 
-Static phone lookup for three WeChat groups. MindGraph stays on port 9527. This site is a separate Nginx process on port **9531**, fronted by a new Nginx Proxy Manager proxy host.
+Static phone lookup for three WeChat groups. MindGraph stays on port 9527. Host Nginx serves this site on port **9531**, and Nginx Proxy Manager fronts it.
 
 ## Roster
 
@@ -37,14 +37,22 @@ The pictures already on the page expire before 1 December 2026. Replace these fi
 - `public/qr/inquiry.png` — 探究实验组
 - `public/qr/learning-by-doing.png` — 做中学组
 
-No restart is required. The folder is mounted into Nginx. If WeChat still shows an old code, send the page link with a new query, for example `https://your-host/?v=2`.
+No restart is required after replacing a picture. If WeChat still shows an old code, send the page link with a new query, for example `https://your-host/?v=2`.
 
 ## Run
 
-From this directory's `deploy/` folder on the server:
+Install Nginx on the host if it is not already there, then:
 
 ```bash
-docker compose up -d
+sudo git clone git@github.com:lycosa9527/yanxiu-group-lookup.git /var/www/yanxiu-group-lookup
+sudo cp /var/www/yanxiu-group-lookup/deploy/nginx.conf /etc/nginx/conf.d/yanxiu-group-lookup.conf
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+Later updates are a pull. The page files are read from disk, so Nginx does not need a reload:
+
+```bash
+cd /var/www/yanxiu-group-lookup && sudo git pull
 ```
 
 Teachers use one HTTPS link, not a link per person.
@@ -64,11 +72,11 @@ Add a **new** proxy host. Leave the MindGraph host on port 9527 as it is.
    - Cache Assets: off
 3. SSL: request a certificate, Force SSL on.
 
-If `9531` is already taken, change the left-hand side of `9531:80` in `deploy/docker-compose.yml` and use that same port in Nginx Proxy Manager.
+If `9531` is already taken, change `listen 9531` in `deploy/nginx.conf` and use that same port in Nginx Proxy Manager.
 
 ## Security
 
-Nginx turns directory listing off, answers only GET and HEAD, and sends headers that block framing, content sniffing, and any script or style that is not part of this site. The container drops the ability to gain extra privileges.
+Nginx turns directory listing off, answers only GET and HEAD, and sends headers that block framing, content sniffing, and any script or style that is not part of this site.
 
 The roster and the QR images are the access secret. Keep this repository private. Anyone who can open the page can read `teachers.js`.
 
