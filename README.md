@@ -41,25 +41,20 @@ No restart is required after replacing a picture. If WeChat still shows an old c
 
 ## Run
 
-Install Nginx on the host if it is not already there, then:
+Leave the existing MindGraph proxy host on port 9527 as it is. Add a second proxy host for this site.
+
+Proxy Manager forwards to a port, so this folder needs its own listener on **9531**:
 
 ```bash
 sudo git clone git@github.com:lycosa9527/yanxiu-group-lookup.git /var/www/yanxiu-group-lookup
+sudo apt install nginx
 sudo cp /var/www/yanxiu-group-lookup/deploy/nginx.conf /etc/nginx/conf.d/yanxiu-group-lookup.conf
 sudo nginx -t && sudo systemctl reload nginx
 ```
 
-Later updates are a pull. The page files are read from disk, so Nginx does not need a reload:
+That Nginx process listens on 9531 only. Ports 80 and 443 stay with Proxy Manager.
 
-```bash
-cd /var/www/yanxiu-group-lookup && sudo git pull
-```
-
-Teachers use one HTTPS link, not a link per person.
-
-## Nginx Proxy Manager
-
-Add a **new** proxy host. Leave the MindGraph host on port 9527 as it is.
+In Proxy Manager, add a proxy host:
 
 1. DNS: an A record for a hostname you choose, pointing at this same server. Example: `yanxiu.mindspringedu.com`.
 2. Proxy Host → Details
@@ -71,6 +66,14 @@ Add a **new** proxy host. Leave the MindGraph host on port 9527 as it is.
    - Websockets: off
    - Cache Assets: off
 3. SSL: request a certificate, Force SSL on.
+
+Later updates are a pull. The page files are read from disk, so Nginx does not need a reload:
+
+```bash
+cd /var/www/yanxiu-group-lookup && sudo git pull
+```
+
+Teachers use one HTTPS link, not a link per person.
 
 If `9531` is already taken, change `listen 9531` in `deploy/nginx.conf` and use that same port in Nginx Proxy Manager.
 
