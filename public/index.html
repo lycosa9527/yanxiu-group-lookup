@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0e6b45">
+  <title>研修小组入群</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <main class="wrap">
+    <div class="mark" aria-hidden="true">研</div>
+    <h1>研修小组入群</h1>
+    <p class="lede">请输入姓名和手机号后六位，查询您的研修小组。</p>
+    <form id="lookup" class="card" novalidate>
+      <label for="name">姓名</label>
+      <input id="name" name="name" type="text" maxlength="40" autocomplete="name" autocapitalize="off" spellcheck="false" enterkeyhint="next">
+      <label for="phone">手机号后六位</label>
+      <input id="phone" name="tel" type="text" maxlength="20" inputmode="numeric" autocomplete="tel" spellcheck="false" enterkeyhint="search" placeholder="后六位，或完整手机号">
+      <button type="submit">查询</button>
+    </form>
+    <p id="setup" class="banner warn" hidden></p>
+    <div id="result" aria-live="polite"></div>
+  </main>
+  <script src="lookup.js"></script>
+  <script src="teachers.js"></script>
+  <script src="page.js"></script>
+</body>
+</html>
